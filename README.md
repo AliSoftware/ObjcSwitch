@@ -12,8 +12,8 @@ The use of swich/case is not limited to integers/enums anymore!
      @"value1", ^{
          NSLog(@"The string someString is equal to value1!");
      },
-     @"value1", ^{
-         NSLog(@"The string someString is equal to value1!");
+     @"value2", ^{
+         NSLog(@"The string someString is equal to the other value value2!");
      },
      @"", ^{
          NSLog(@"The string someString is empty!");
