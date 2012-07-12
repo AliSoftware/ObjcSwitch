@@ -1,10 +1,10 @@
 ObjcSwitch
 ==========
 
-A category to allow you to use the "switch/case"-like syntax to NSObjects!
+This NSObject category allows you to use a "switch/case"-like syntax with any NSObject.
 
-The idea is to extend the "switch/case" instruction to NSObject (instead of
-  having to do a lot of `if/else/else/...` that needs to call `isEqual:`)
+The use of swich/case is not limited to integers/enums anymore!
+
 
 ## Basic Example
 
@@ -19,47 +19,49 @@ The idea is to extend the "switch/case" instruction to NSObject (instead of
          NSLog(@"The string someString is empty!");
      }, nil];
 
-## Arguments
+## Expected arguments
 
 The `switchCase:` method takes a `nil`-terminated variable number of arguments,
-  that needs to go by pairs (like in the `dictionaryWithObjectsAndKeys:` method).
-   
-The first argument is a value to be tested, and the second argument
+  that needs to go by pairs (like in the `dictionaryWithObjectsAndKeys:` method for example).
+
+The first argument is a value to be tested. The second argument
   is the block of code to be executed if the object
   (on which we called the `switchCase:` method) is equal to the preceding value.
-The next arguments continue the same way until `nil` is met.
+The next arguments continue the same way (test object, code block, test object, code block, ...)
+  until the value `nil` is met.
 
 * The arguments with an odd position (first, third, fifth, ...) have to be `id` objects.
 * The arguments with an even position (second, fourth, sixth, ...) have to be blocks
-    that does not take arguments and does not return a value (`dispatch_block_t`),
-    that is blocks with the syntax `^{ /* some code */ }`.
+    that does not take arguments and does not return a value (a.k.a. blocks of type `dispatch_block_t`),
+    which simply means blocks with the syntax `^{ /* some code */ }`.
 
-## Behavior
+_Note: Be careful to respect these types: as with every methods having a variable number of arguments
+  (like `dictionaryWithObjectsAndKeys:` and others) the parameters are not checked at compile-time.
+  So parameters with the wrong type may lead to unexpected behavior or crashes at runtime._
 
-The first object that returns `YES` when compared to the target object using `isEqual:`
-  makes its corresponding block to be executed and the `switchCase:` method to return `YES`.
 
-If no object in the parameters list are found to be equal to the target object,
-  the `switchCase:` method returns `NO`.
+## Implementing the `default:` case
 
-This means that:
-
-* If multiple objects listed in the parameters are equal to the target object,
-  only the first one will trigger its corresponding code. _This is quite the equivalent of
-  having a "break" statement after each "case" entry in a standard "switch" C statement._
-* You can implement the equivalent of the "default:" statement by testing the return
-  value of the `switchCase:` method:
+The `switchCase:` method returns `YES` if it has found an object equal to the target object
+  (and thus has executed the corresponding code) and `NO` if none of the test objects were found
+  equal to the target object.
+  
+This allows you to implement the equivalent of the "`default:`" statement by testing the return
+  value of the `switchCase:` method, for example this (compact) way:
   
     if(![someObject switchCase:
-         comparisonObject1, ^{
-             NSLog(@"Case 1");
-         },
-         comparisonObject2, ^{
-             NSLog(@"Case 2");
-         }, nil])
+         comparisonObject1, ^{ NSLog(@"Case 1"); },
+         comparisonObject2, ^{ NSLog(@"Case 2"); },
+         nil])
     { // default: 
-        NSLog(@"No case found!");
+        NSLog(@"Default: No case found!");
     }
+
+
+_Note that the global behavior of the `switchCase:` method is designed so that as soon as an object
+  is found equal to the target object and its corresponding code is executed, the `switchCase:` method
+  returns immediately, without testing the other values._
+_This is the equivalent (compared to a standard C switch/case statement) of having a `break;` after each `case:`._
 
 
 ## Using a different selector than `isEqual:`
@@ -69,12 +71,22 @@ The `switchCase:` method uses the `isEqual:` selector to compare the target obje
 
 An alternative method `switchCaseWithComparisonSelector:` is provided if you need
   to selector different to `isEqual:` for objects comparison.
-  
 Its syntax is basically the same as `switchCase:`, except that you provide the `@selector`
   to use as the first parameter before the `nil`-terminated list of testObject/codeBlock pairs:
   
     [[name lowercaseString] switchCaseWithComparisonSelector:@selector(isEqualToString:),
-     @"firstname", ^{ NSLog(@"This is FirstName"); },
+     @"firstname",  ^{ NSLog(@"This is FirstName"); },
      @"secondname", ^{ NSLog(@"Hello SecondName"); },
-     @"thirdname", ^{ NSLog(@"I am ThirdName"); },
+     @"thirdname",  ^{ NSLog(@"I am ThirdName"); },
      nil];
+
+# Integrate in your projects
+
+Simply drag & drop the `NSObject+ObjCSwitch.h` and `NSObject+ObjCSwitch.m` files in your Xcode project.
+
+Then, when you want to use the `switchCase:` method on any object, don't forget to import the header
+  in your file (or you may instead add the `#import "NSObject+ObjCSwitch.h` in your
+  Precompiled Header File (`xxx-Prefix.pch`) to avoid the need to import it everywhere in your source code).
+
+
+_Note: ObjCSwitch is compatible with both ARC and non-ARC projects (it does not create, retain or release any object anyway)_
