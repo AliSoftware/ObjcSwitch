@@ -25,10 +25,8 @@
     BOOL (*compareFunction)(id, SEL, id) = (BOOL(*)(id,SEL,id))[self methodForSelector:selector];
     BOOL oneCaseHit = NO;
     
-    do
+    while (testValue != nil)
     {
-        if (testValue == nil) break;
-        
         code = va_arg(args, dispatch_block_t);
         
         if (compareFunction(self, selector, testValue))
@@ -39,7 +37,7 @@
         }
         
         testValue = va_arg(args, id);
-    } while (1);
+    }
     
     return oneCaseHit;
 }

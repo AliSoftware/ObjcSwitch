@@ -80,6 +80,10 @@ Its syntax is basically the same as `switchCase:`, except that you provide the `
      @"thirdname",  ^{ NSLog(@"I am ThirdName"); },
      nil];
 
+The selector used must take a single parameter of type `id` and return a value of type `BOOL`
+  (exactly as the `isEqual:` method and other `isEqualToXXX:` methods like `isEqualToString:`).
+
+
 # Integrate in your projects
 
 Simply drag & drop the `NSObject+ObjCSwitch.h` and `NSObject+ObjCSwitch.m` files in your Xcode project.
