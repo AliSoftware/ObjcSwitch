@@ -58,11 +58,11 @@ This allows you to implement the equivalent of the "`default:`" statement by tes
     }
 
 
-_Note that the global behavior of the `switchCase:` method is designed so that as soon as an object
-  is found equal to the target object and its corresponding code is executed, the `switchCase:` method
-  returns immediately, without testing the other values._
+_Note that the global behavior of the `switchCase:` method is designed so that it returns as soon as
+  an object is found equal to the target object (and its corresponding code is executed),
+  without testing the values after the found one._
 _This is the equivalent (compared to a standard C switch/case statement) of having a `break;` after each `case:`._
-
+It is thus guaranteed than no more than one block of code will be executed by the `switchCase:` method.
 
 ## Using a different selector than `isEqual:`
 
@@ -70,7 +70,7 @@ The `switchCase:` method uses the `isEqual:` selector to compare the target obje
   the objects to be tested in the parameters.
 
 An alternative method `switchCaseWithComparisonSelector:` is provided if you need
-  to selector different to `isEqual:` for objects comparison.
+  to use a selector other than `isEqual:` for objects comparison.
 Its syntax is basically the same as `switchCase:`, except that you provide the `@selector`
   to use as the first parameter before the `nil`-terminated list of testObject/codeBlock pairs:
   
