@@ -58,10 +58,11 @@ This allows you to implement the equivalent of the "`default:`" statement by tes
     }
 
 
-_Note that the global behavior of the `switchCase:` method is designed so that it returns as soon as
+###### Note
+The global behavior of the `switchCase:` method is designed so that it returns as soon as
   an object is found equal to the target object (and its corresponding code is executed),
-  without testing the values after the found one._
-_This is the equivalent (compared to a standard C switch/case statement) of having a `break;` after each `case:`._
+  without testing the values after the found one.
+This is the equivalent (compared to a standard C switch/case statement) of having a `break;` after each `case:`.
 It is thus guaranteed than no more than one block of code will be executed by the `switchCase:` method.
 
 ## Using a different selector than `isEqual:`
